@@ -15,7 +15,6 @@ public class Deck : MonoBehaviour
     [Header("Card UI")] [SerializeField] private GameObject cardContainer;
     [SerializeField] private TMPro.TextMeshProUGUI title, cardType, body;
     [SerializeField] private UnityEvent<Card> onDraw;
-    [SerializeField] private bool hasPulledCard = false;
     private void Awake()
     {
         Debug.Log($"Shuffling {name}");
@@ -37,11 +36,10 @@ public class Deck : MonoBehaviour
 
     public void Draw()
     {
-        if (!hasPulledCard && cards.Count > 0)
+        if (cards.Count > 0)
         {
             Card card = cards[0];
             cards.RemoveAt(0);
-            hasPulledCard = true;
             //shift card to end
             if (!drawRemoves)
             {
@@ -50,10 +48,6 @@ public class Deck : MonoBehaviour
             onDraw?.Invoke(card);
             buttonText.text = $"Deck Size {cards.Count}";
             ShowCard(card);
-        }
-        else if (hasPulledCard)
-        {
-            Debug.LogError("Player has already pulled a card");
         }
         else
         {
@@ -74,13 +68,7 @@ public class Deck : MonoBehaviour
     {
         cardContainer.SetActive(false);
     }
-
-    public void ResetPullStatus()
-    {
-        hasPulledCard = false;
-    }
 }
-
 [Serializable]
 public class Card
 {
